@@ -672,7 +672,7 @@ _lock = threading.Lock()
 
 # A TLS for the running event loop, used by _get_running_loop.
 class _RunningLoop(threading.local):
-    loop_pid = (None, None)
+    loop_pid = (None, None)   # （eventloop, thread_pid), 每个不同的线程loop是不一样
 
 
 _running_loop = _RunningLoop()
@@ -744,6 +744,8 @@ def get_event_loop():
 
     If there is no running event loop set, the function will return
     the result of `get_event_loop_policy().get_event_loop()` call.
+
+    返回当前执行的时间循环
     """
     # NOTE: this function is implemented in C (see _asynciomodule.c)
     current_loop = _get_running_loop()

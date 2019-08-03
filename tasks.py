@@ -137,7 +137,7 @@ class Task(futures._PyFuture):  # Inherit Python Task implementation
         self._must_cancel = False
         self._fut_waiter = None
         self._coro = coro
-        self._context = contextvars.copy_context()
+        self._context = contextvars.copy_context()  # 复制协程上下文
 
         self._loop.call_soon(self.__step, context=self._context)
         _register_task(self)
@@ -848,10 +848,12 @@ def run_coroutine_threadsafe(coro, loop):
 
 
 # WeakSet containing all alive tasks.
+# 防止task执行完了，task还被引用着，不能释放内存
 _all_tasks = weakref.WeakSet()
 
 # Dictionary containing tasks that are currently active in
 # all running event loops.  {EventLoop: Task}
+# 记录当前loop正在执行的task
 _current_tasks = {}
 
 
